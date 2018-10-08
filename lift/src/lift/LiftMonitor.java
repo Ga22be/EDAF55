@@ -53,6 +53,7 @@ public class LiftMonitor {
 		view.drawLift(current, ++load);
 		view.drawLevel(current, --waitEntry[here]);
 		waitExit[target]++;
+		notifyAll();
 		while (here != next  || here != target) {
 			wait();
 		}

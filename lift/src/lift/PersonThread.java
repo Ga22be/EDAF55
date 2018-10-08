@@ -17,13 +17,12 @@ public class PersonThread extends Thread {
 			while (true) {
 				long sleep = (long)(Math.random() * 46000);
 				Thread.sleep(sleep);
+				currentFloor = (int) Math.round(Math.random() * 6);
 				do {
-					currentFloor = (int) Math.round(Math.random() * 6);
 					targetFloor = (int) Math.round(Math.random() * 6);
 				} while (currentFloor == targetFloor);
 				System.out.println(currentFloor + "-->" + targetFloor);
 				mon.travel(currentFloor, targetFloor);
-				System.out.println("Trip finished, sleeping");
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

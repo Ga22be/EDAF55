@@ -13,7 +13,6 @@ public class LiftThread extends Thread {
 	public void run() {
 		try {		
 			while (true) {
-				//mon.arrived();
 				int next = mon.startMove();
 				mon.moveLift(currentFloor, next);
 				currentFloor = next;
