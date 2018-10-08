@@ -76,10 +76,10 @@ public class TimeKeeper {
 	}
 	
 	public void resetAlarm() {
-		if(beeping) {
-			beeping = false;
-			beeps = 0;
-		}
+		mutex.take();
+		beeping = false;
+		beeps = 0;
+		mutex.give();
 	}
 	
 	public boolean isAlarm() {

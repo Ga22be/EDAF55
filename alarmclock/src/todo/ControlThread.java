@@ -30,10 +30,6 @@ public class ControlThread extends Thread {
 			else if (state != prevState && prevState == ClockInput.SET_ALARM) {
 				keeper.setAlarmTime(input.getValue());
 			} 
-			// Check if default show time
-			else if (state == ClockInput.SHOW_TIME) {
-				// Do nothing?
-			}
 			// update alarm active state
 			keeper.setAlarmState(input.getAlarmFlag());
 			prevState = state;

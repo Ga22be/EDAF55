@@ -3,11 +3,11 @@ package buffer;
 import se.lth.cs.realtime.RTError;
 
 class Buffer {
-	int available;		// Number of lines that are available. 
-	final int size=8;		// The max number of buffered lines.
-	String[] buffData;	// The actual buffer.
-	int nextToPut;		// Writers index.
-	int nextToGet;		// Readers index.
+	int available; // Number of lines that are available.
+	final int size = 8; // The max number of buffered lines.
+	String[] buffData; // The actual buffer.
+	int nextToPut; // Writers index.
+	int nextToGet; // Readers index.
 
 	Buffer() {
 		buffData = new String[size];
@@ -15,18 +15,32 @@ class Buffer {
 
 	synchronized void putLine(String inp) {
 		try {
-			while (available==size) wait();
+			while (available == size)
+				wait();
 		} catch (InterruptedException exc) {
-			throw new RTError("Buffer.putLine interrupted: "+exc);
-		};
+			throw new RTError("Buffer.putLine interrupted: " + exc);
+		}
+		;
 		buffData[nextToPut] = new String(inp);
-		if (++nextToPut >= size) nextToPut = 0;
+		if (++nextToPut >= size)
+			nextToPut = 0;
 		available++;
 		notifyAll(); // Only notify() could wake up another producer.
 	}
 
 	synchronized String getLine() {
 		// Write the code that implements this method ...
-		return null;
+		try {
+			while (!(available > 0))
+				wait();
+		} catch (InterruptedException e) {
+			throw new RTError("Wait seems to have failed");
+		}
+		String buffCpy = buffData[nextToGet];
+		buffData[nextToGet] = null;
+		nextToGet = (++nextToGet) % 8;
+		available--;
+		notifyAll(); // Only notify() could wake up another producer.
+		return buffCpy;
 	}
 }

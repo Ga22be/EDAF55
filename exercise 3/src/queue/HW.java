@@ -2,7 +2,7 @@ package queue;
 
 public class HW {
 	static void waitClerkButton(int id) {
-		long sleep = (long)(Math.random() * 60000);
+		long sleep = (long)(Math.random() * 30000);
 		try {
 			Thread.sleep(sleep);
 		} catch (InterruptedException e) {

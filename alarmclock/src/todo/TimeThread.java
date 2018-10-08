@@ -13,9 +13,12 @@ public class TimeThread extends Thread {
 	}
 	
 	public void run() {
+		long timeNill = System.currentTimeMillis();
 		while(true) {
+			timeNill+=1000;
 			try {
-				monitorSleep(1000);
+//				monitorSleep(1000);
+				sleep(timeNill-System.currentTimeMillis());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
