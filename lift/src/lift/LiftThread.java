@@ -11,18 +11,16 @@ public class LiftThread extends Thread {
 	}
 	
 	public void run() {
-		while (true) {
-			//mon.arrived();
-			int next = mon.startMove();
-			mon.moveLift(currentFloor, next);
-			currentFloor = next;
-			mon.stopMove();
-			long sleep = (long)(Math.random() * 500);
-			try {
-				Thread.sleep(sleep);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		try {		
+			while (true) {
+				//mon.arrived();
+				int next = mon.startMove();
+				mon.moveLift(currentFloor, next);
+				currentFloor = next;
+				mon.stopMove();
 			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 

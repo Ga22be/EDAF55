@@ -1,7 +1,5 @@
 package lift;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Occurs;
-
 public class LiftMonitor {
 	// Do monitoring
 	private static int LIFT_CAPACITY = 4;
@@ -30,14 +28,9 @@ public class LiftMonitor {
 		view.moveLift(current, target);
 	}
 	
-	synchronized public int startMove() {
-		while((waitEntry[here] > 0 && load < 4) || waitExit[here] != 0) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	synchronized public int startMove() throws InterruptedException {
+		while((waitEntry[here] > 0 && load < LIFT_CAPACITY) || waitExit[here] != 0 || emptySystem()) {
+			wait();
 		}
 		return next += direction;			
 	}
@@ -50,32 +43,19 @@ public class LiftMonitor {
 		notifyAll();
 	}
 	
-	synchronized public void travel(int current, int target) {
-		System.out.println("New trip planned");
+	synchronized public void travel(int current, int target) throws InterruptedException {
 		waitEntry[current]++;
 		view.drawLevel(current, waitEntry[current]);
-		System.out.println("Place taken on start level");
-		while (here != next  || current != here || load == 4) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		notifyAll();
+		while (here != next  || current != here || load == LIFT_CAPACITY) {
+			wait();
 		}
-		System.out.println("Lift arrived");
 		view.drawLift(current, ++load);
 		view.drawLevel(current, --waitEntry[here]);
 		waitExit[target]++;
-		System.out.println("Entered lift");
-		while (here != target) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		while (here != next  || here != target) {
+			wait();
 		}
-		System.out.println("Lift arrived to target floor");
 		view.drawLift(target, --load);
 		waitExit[target]--;
 		
@@ -83,21 +63,17 @@ public class LiftMonitor {
 	}
 	
 	private boolean emptySystem() {
-		boolean emptySystem = true;
 		for (int i : waitEntry) {
 			if (i > 0) {
-				emptySystem = false;
-				//goto would be nice -> end
-				break;
+				return false;
 			}
 		}
 		for (int j : waitExit) {
 			if (j > 0) {
-				emptySystem = false;
-				break;
+				return false;
 			}
 		}
-		end: return emptySystem;
+		return true;
 	}
 
 
